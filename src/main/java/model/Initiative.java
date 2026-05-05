@@ -42,7 +42,6 @@ public class Initiative {
         updates.add(update);
     }
 
-
     public double getCarbonSavings(){
         return members.size()*2.5; //mock value
     }
