@@ -1,9 +1,19 @@
-package model;
+package mediator;
+
+import model.Initiative;
+import model.Message;
+import model.Update;
+import model.User;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+@Service
 public class InitiativeService {
 
+    private List<Initiative> initiatives = new ArrayList<>();
     private LocalZeroMediator mediator;
 
     public InitiativeService(LocalZeroMediator mediator) {
@@ -27,8 +37,14 @@ public class InitiativeService {
         mediator.newMessage(message);
     }
 
-    public void newInitiative(String title, String description, String location, LocalDate startDate, LocalDate endDate, Initiative.Category category, Initiative.Visibility visibility, User creator) {
+    public Initiative newInitiative(String title, String description, String location, LocalDate startDate, LocalDate endDate, Initiative.Category category, Initiative.Visibility visibility, User creator) {
         Initiative initiative = new Initiative(title, description, location, startDate, endDate, category, visibility, creator);
+        initiatives.add(initiative);
         mediator.newInitiative(initiative);
+        return initiative;
+    }
+
+    public List<Initiative> getInitiatives() {
+        return initiatives;
     }
 }

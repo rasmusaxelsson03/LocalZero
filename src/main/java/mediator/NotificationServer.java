@@ -1,8 +1,12 @@
-package model;
+package mediator;
+
+import model.Notification;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class NotificationServer {
     private List<Notification> notifications = new ArrayList<Notification>();
 

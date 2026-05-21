@@ -1,10 +1,20 @@
-package model;
+package mediator;
 
+import model.Initiative;
+import model.Notification;
+import model.Update;
+import model.Message;
+import model.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Component
 public class LocalZeroMediator {
 
     private NotificationServer server;
     private UserService userService;
 
+    @Autowired
     public LocalZeroMediator(NotificationServer server, UserService userService) {
         this.server = server;
         this.userService = userService;

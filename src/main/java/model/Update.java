@@ -1,5 +1,7 @@
 package model;
 
+import mediator.LocalZeroMediator;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
