@@ -23,7 +23,7 @@ public class UserService {
     }
 
     public User register(String name, String email, String location, String password){
-        User user = new User(name, email, location, password);
+        User user = new User(name, email, location, hash(password));
         users.add(user);
         return user;
     }

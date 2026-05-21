@@ -12,12 +12,12 @@ public class User {
     private String passwordHash;
     private Set<Role> roles = new HashSet<>();
 
-    public User(String name, String email, String passwordHash, String location){
+    public User(String name, String email, String location, String passwordHash){
         this.id = UUID.randomUUID();
         this.name = name;
         this.email = email;
-        this.passwordHash = passwordHash;
         this.location = location;
+        this.passwordHash = passwordHash;
         this.roles.add(Role.RESIDENT);
     }
 
