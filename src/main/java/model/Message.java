@@ -1,29 +1,32 @@
 package model;
 
-import java.util.UUID;
+import jakarta.persistence.*;
 
+@Entity
 public class Message {
-    private UUID id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String message;
+
+    @ManyToOne
     private User toUser;
+
+    @ManyToOne
     private User fromUser;
 
+    protected Message() {}
+
     public Message(String message, User toUser, User fromUser) {
-        this.id = UUID.randomUUID();
         this.message = message;
-        this.fromUser = fromUser;
         this.toUser = toUser;
+        this.fromUser = fromUser;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public User getToUser(){
-        return toUser;
-    }
-
-    public User getFromUser() {
-        return fromUser;
-    }
+    public Long getId()         { return id; }
+    public String getMessage()  { return message; }
+    public User getToUser()     { return toUser; }
+    public User getFromUser()   { return fromUser; }
 }
