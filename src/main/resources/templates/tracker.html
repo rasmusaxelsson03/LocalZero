@@ -14,7 +14,6 @@
 
     <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
-    <!-- STATS -->
     <div class="stats-row">
         <div class="stat-box">
             <div class="stat-label">CO₂ saved</div>
@@ -28,22 +27,20 @@
         </div>
     </div>
 
-    <!-- LOG AN ACTION -->
     <div class="card">
         <div style="font-weight:600; margin-bottom:14px; font-size:15px;">Log an action</div>
         <div class="eco-grid">
             <form th:each="action : ${ecoActionTypes}" th:action="@{/tracker/log}" method="post">
-                <input type="hidden" name="actionId" th:value="${action.id}">
+                <input type="hidden" name="actionId" th:value="${action.name()}">
                 <button type="submit" class="eco-action-btn">
                     <span class="eco-icon" th:text="${action.icon}">🌱</span>
-                    <span class="eco-name" th:text="${action.name}">Action</span>
-                    <span class="eco-co2">+<span th:text="${action.co2}">0</span> kg CO₂</span>
+                    <span class="eco-name" th:text="${action.displayName}">Action</span>
+                    <span class="eco-co2">+<span th:text="${action.co2Saved}">0</span> kg CO₂</span>
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- RECENT LOGS -->
     <div class="card" th:if="${not #lists.isEmpty(recentLogs)}">
         <div style="font-weight:600; margin-bottom:10px; font-size:15px;">Recent actions</div>
         <div class="log-list">

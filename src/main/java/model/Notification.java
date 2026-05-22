@@ -1,43 +1,35 @@
 package model;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
+@Entity
 public class Notification {
-    private UUID id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String message;
+
+    @ManyToOne
     private User toUser;
+
     private boolean read = false;
     private LocalDateTime timestamp;
 
-    public Notification(String message, User toUser){
-        this.id = UUID.randomUUID();
+    protected Notification() {}
+
+    public Notification(String message, User toUser) {
         this.message = message;
         this.toUser = toUser;
-        timestamp = LocalDateTime.now();
+        this.timestamp = LocalDateTime.now();
     }
 
-    public void markRead(){
-        read = true;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public User getToUser() {
-        return toUser;
-    }
-
-    public boolean isRead() {
-        return read;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
+    public void markRead()                  { read = true; }
+    public Long getId()                     { return id; }
+    public String getMessage()              { return message; }
+    public User getToUser()                 { return toUser; }
+    public boolean isRead()                 { return read; }
+    public LocalDateTime getTimestamp()     { return timestamp; }
 }

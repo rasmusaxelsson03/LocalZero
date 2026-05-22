@@ -1,19 +1,29 @@
 package model;
 
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
+@Entity
+@Table(name = "users")
 public class User {
-    private UUID id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
     private String email;
     private String location;
     private String passwordHash;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>();
 
-    public User(String name, String email, String location, String passwordHash){
-        this.id = UUID.randomUUID();
+    protected User() {}
+
+    public User(String name, String email, String location, String passwordHash) {
         this.name = name;
         this.email = email;
         this.location = location;
@@ -21,31 +31,12 @@ public class User {
         this.roles.add(Role.RESIDENT);
     }
 
-    public void addRole(Role role){
-        roles.add(role);
-    }
+    public void addRole(Role role) { roles.add(role); }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
+    public Long getId()             { return id; }
+    public String getName()         { return name; }
+    public String getEmail()        { return email; }
+    public String getLocation()     { return location; }
+    public String getPasswordHash() { return passwordHash; }
+    public Set<Role> getRoles()     { return roles; }
 }

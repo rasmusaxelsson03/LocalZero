@@ -1,23 +1,39 @@
 package model;
 
-import mediator.LocalZeroMediator;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+@Entity
 public class Update {
-    private UUID id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String content;
     private String imageUrl;
-    private User author;
-    private Initiative initiative;
-    private LocalDateTime timestamp;
-    private List<String> comments = new ArrayList<>();
-    private Set<UUID> likedByUserIds = new HashSet<>();
-    private LocalZeroMediator mediator;
 
-    public Update(String content, String imageUrl, User author, Initiative initiative){
-        this.id = UUID.randomUUID();
+    @ManyToOne
+    private User author;
+
+    @ManyToOne
+    private Initiative initiative;
+
+    private LocalDateTime timestamp;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> comments = new ArrayList<>();
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Long> likedByUserIds = new HashSet<>();
+
+    protected Update() {}
+
+    public Update(String content, String imageUrl, User author, Initiative initiative) {
         this.content = content;
         this.imageUrl = imageUrl;
         this.author = author;
@@ -25,35 +41,18 @@ public class Update {
         this.timestamp = LocalDateTime.now();
     }
 
-    public void addComment(String comment){
-        comments.add(comment);
-    }
+    public void addComment(String comment)  { comments.add(comment); }
 
-    public void like(User user){
-        likedByUserIds.add(user.getId());
-    }
+    public void like(User user)             { likedByUserIds.add(user.getId()); }
 
-    public UUID getId() {
-        return id;
-    }
+    public boolean isLikedBy(Long userId)   { return likedByUserIds.contains(userId); }
 
-    public String getContent() {
-        return content;
-    }
-
-    public User getAuthor() {
-        return author;
-    }
-
-    public List<String> getComments() {
-        return comments;
-    }
-
-    public int getLikeCount(){
-        return likedByUserIds.size();
-    }
-
-    public void addLikedByUserId(UUID id){
-        likedByUserIds.add(id);
-    }
+    public Long getId()                     { return id; }
+    public String getContent()              { return content; }
+    public String getImageUrl()             { return imageUrl; }
+    public User getAuthor()                 { return author; }
+    public Initiative getInitiative()       { return initiative; }
+    public LocalDateTime getTimestamp()     { return timestamp; }
+    public List<String> getComments()       { return comments; }
+    public int getLikeCount()               { return likedByUserIds.size(); }
 }
