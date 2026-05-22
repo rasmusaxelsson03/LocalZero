@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+<nav th:fragment="navbar">
+    <a class="nav-logo" th:href="@{/feed}">🌱 LocalZero</a>
+    <a th:href="@{/feed}">Feed</a>
+    <a th:href="@{/tracker}">Tracker</a>
+    <a th:href="@{/inbox}">Inbox</a>
+    <span class="nav-user" th:text="${session.userName + ' · ' + session.userRole}"></span>
+    <a class="btn-logout" th:href="@{/logout}">Log out</a>
+</nav>
+
+</body>
+</html>

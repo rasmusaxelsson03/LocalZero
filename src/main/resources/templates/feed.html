@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>LocalZero – Feed</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div class="container">
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="section-header">
+        <h1 class="page-title" style="margin:0;">Initiatives</h1>
+        <a th:href="@{/initiatives/new}" class="btn btn-primary btn-sm">+ New initiative</a>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div th:if="${#lists.isEmpty(initiatives)}" class="empty">
+        <p>No initiatives yet. Be the first to create one!</p>
+    </div>
+
+    <!-- INITIATIVE CARDS -->
+    <div th:each="init : ${initiatives}">
+        <div class="card">
+            <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:8px;">
+                <div style="font-size:24px;" th:text="${init.categoryIcon}">🌱</div>
+                <div style="flex:1;">
+                    <div class="card-title" th:text="${init.title}">Title</div>
+                    <div class="card-meta">
+                        📍 <span th:text="${init.location}"></span> &nbsp;·&nbsp;
+                        <span th:text="${init.duration}"></span> days
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom:10px;">
+                <span class="badge badge-green" th:text="${init.category}"></span>
+                <span class="badge badge-gray" th:text="${init.visibility}"></span>
+            </div>
+
+            <div class="card-desc" th:text="${init.description}"></div>
+
+            <div class="card-footer">
+        <span style="font-size:12px; color:#888780;">
+          👥 <span th:text="${init.memberCount}">0</span> members
+        </span>
+                <div style="display:flex; gap:8px;">
+                    <!-- Join/Leave button -->
+                    <form th:action="@{/initiatives/{id}/join(id=${init.id})}" method="post">
+                        <button type="submit"
+                                th:class="${init.joinedByCurrentUser} ? 'btn btn-joined btn-sm' : 'btn btn-primary btn-sm'"
+                                th:text="${init.joinedByCurrentUser} ? '✓ Joined' : 'Join'">
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
