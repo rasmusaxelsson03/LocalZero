@@ -38,7 +38,7 @@ public class UpdateController {
     public Update postUpdate(@RequestBody PostUpdateRequest req){
         User author = userService.findByID(req.authorId);
         Initiative initiative = initiativeService.findByID(UUID.fromString(req.initiativeId));
-        return updateService.postUpdate(req.content, req.imageUrl, author, initiative)
+        return updateService.postUpdate(req.content, req.imageUrl, author, initiative);
     }
 
     //POST /api/updates/{id}/like
