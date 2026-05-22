@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class InitiativeService {
@@ -46,5 +47,14 @@ public class InitiativeService {
 
     public List<Initiative> getInitiatives() {
         return initiatives;
+    }
+
+    public Initiative findByID(UUID id) {
+        for (Initiative i : initiatives) {
+            if (i.getId().equals(id)) {
+                return i;
+            }
+        }
+        return null;
     }
 }

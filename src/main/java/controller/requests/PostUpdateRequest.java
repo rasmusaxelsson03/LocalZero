@@ -1,6 +1,6 @@
 package controller.requests;
 
-public class PostUpdateRequests {
+public class PostUpdateRequest {
     public String content;
     public String imageUrl;
     public String authorId;
