@@ -1,6 +1,7 @@
 package controller;
 
 import controller.requests.CreateInitiativeRequest;
+import controller.requests.JoinInitiativeRequest;
 import mediator.InitiativeService;
 import mediator.UserService;
 import model.Initiative;
