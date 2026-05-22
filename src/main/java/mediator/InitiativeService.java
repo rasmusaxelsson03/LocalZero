@@ -1,5 +1,6 @@
 package mediator;
 
+import iterator.InitiativeIterator;
 import model.Initiative;
 import model.Message;
 import model.Update;
@@ -19,6 +20,13 @@ public class InitiativeService {
 
     public InitiativeService(LocalZeroMediator mediator) {
         this.mediator = mediator;
+    }
+
+    public Initiative findByID(String id){
+        return initiatives.stream()
+                .filter(u -> u.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 
     public void addMember(User user, Initiative initiative) {
@@ -56,5 +64,10 @@ public class InitiativeService {
             }
         }
         return null;
+    }
+
+    public double getTotalCarbonSavings() {
+        InitiativeIterator iterator = new InitiativeIterator(initiatives);
+        return iterator.totalSavings();
     }
 }
