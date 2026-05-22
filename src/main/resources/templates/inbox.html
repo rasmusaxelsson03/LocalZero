@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>LocalZero – Inbox</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div class="container">
+    <h1 class="page-title">Inbox</h1>
+
+    <!-- MESSAGES -->
+    <div style="font-weight:600; margin-bottom:10px;">Messages</div>
+
+    <div th:if="${#lists.isEmpty(messages)}" class="empty">
+        <p>No messages yet.</p>
+    </div>
+
+    <div th:each="msg : ${messages}">
+        <div th:class="${msg.read} ? 'msg-item' : 'msg-item unread'">
+            <div class="msg-avatar" th:text="${msg.senderInitials}">AB</div>
+            <div style="flex:1; min-width:0;">
+                <div>
+                    <span class="msg-sender" th:text="${msg.senderName}">Name</span>
+                    <span class="msg-time" th:text="${msg.time}">time</span>
+                </div>
+                <div class="msg-preview" th:text="${msg.preview}">Preview...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div style="font-weight:600; margin: 20px 0 10px;">Notifications</div>
+
+    <div th:if="${#lists.isEmpty(notifications)}" class="empty">
+        <p>No notifications yet.</p>
+    </div>
+
+    <div th:each="notif : ${notifications}">
+        <div class="notif-item">
+            <div th:class="${notif.read} ? 'notif-dot read' : 'notif-dot'"></div>
+            <div>
+                <div class="notif-text" th:text="${notif.text}">Notification text</div>
+                <div class="notif-time" th:text="${notif.time}">time</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

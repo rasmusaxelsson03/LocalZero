@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>LocalZero – Eco Tracker</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div class="container">
+    <h1 class="page-title">Eco tracker</h1>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+        <div class="stat-box">
+            <div class="stat-label">CO₂ saved</div>
+            <div class="stat-value" th:text="${#numbers.formatDecimal(totalCo2, 1, 1)}">0.0</div>
+            <div class="stat-unit">kg this month</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Actions logged</div>
+            <div class="stat-value" th:text="${totalActions}">0</div>
+            <div class="stat-unit">total</div>
+        </div>
+    </div>
+
+    <!-- LOG AN ACTION -->
+    <div class="card">
+        <div style="font-weight:600; margin-bottom:14px; font-size:15px;">Log an action</div>
+        <div class="eco-grid">
+            <form th:each="action : ${ecoActionTypes}" th:action="@{/tracker/log}" method="post">
+                <input type="hidden" name="actionId" th:value="${action.id}">
+                <button type="submit" class="eco-action-btn">
+                    <span class="eco-icon" th:text="${action.icon}">🌱</span>
+                    <span class="eco-name" th:text="${action.name}">Action</span>
+                    <span class="eco-co2">+<span th:text="${action.co2}">0</span> kg CO₂</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- RECENT LOGS -->
+    <div class="card" th:if="${not #lists.isEmpty(recentLogs)}">
+        <div style="font-weight:600; margin-bottom:10px; font-size:15px;">Recent actions</div>
+        <div class="log-list">
+            <div class="log-item" th:each="log : ${recentLogs}">
+                <span th:text="${log.icon + ' ' + log.name}">Action</span>
+                <span th:text="${log.timestamp}">time</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
