@@ -57,18 +57,8 @@ public class Initiative {
 
     public double getCarbonSavings()   { return members.size() * 2.5; }
 
-    //fixa detta!
-    public String getCategoryIcon() {
-        return switch (category) {
-            case GARDENING    -> "🌻";
-            case TOOL_SHARING -> "🔧";
-            case FOOD_SWAP    -> "🍎";
-            case RECYCLING    -> "♻️";
-            case RIDESHARING  -> "🚗";
-        };
-    }
 
-    // Hjälpmetod för Thymeleaf – om en specifik user har joinat
+
     public boolean isJoinedBy(Long userId) {
         return members.stream().anyMatch(m -> m.getId().equals(userId));
     }

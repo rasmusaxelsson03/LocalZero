@@ -26,11 +26,17 @@
     <div th:each="init : ${initiatives}">
         <div class="card">
             <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:8px;">
-                <div style="font-size:24px;" th:text="${init.categoryIcon}">🌱</div>
+                <span th:switch="${init.category}">
+                    <span th:case="'GARDENING'" class="badge badge-green">Gardening</span>
+                    <span th:case="'TOOL_SHARING'" class="badge badge-amber">Tool Sharing</span>
+                    <span th:case="'FOOD_SWAP'" class="badge badge-teal">Food Swap</span>
+                    <span th:case="'RECYCLING'" class="badge badge-teal">Recycling</span>
+                    <span th:case="'RIDESHARING'" class="badge badge-gray">Ridesharing</span>
+                </span>
                 <div style="flex:1;">
                     <div class="card-title" th:text="${init.title}">Title</div>
                     <div class="card-meta">
-                        📍 <span th:text="${init.location}"></span> &nbsp;·&nbsp;
+                         <span th:text="${init.location}"></span> &nbsp;·&nbsp;
                         Until <span th:text="${init.endDate}"></span>
                     </div>
                 </div>
@@ -45,7 +51,7 @@
 
             <div class="card-footer">
                 <span style="font-size:12px; color:#888780;">
-                    👥 <span th:text="${init.memberCount}">0</span> members
+                     <span th:text="${init.memberCount}">0</span> members
                 </span>
                 <form th:action="@{/initiatives/{id}/join(id=${init.id})}" method="post">
                     <button type="submit"
