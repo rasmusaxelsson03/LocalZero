@@ -14,7 +14,6 @@ public class Update {
     private LocalDateTime timestamp;
     private List<String> comments = new ArrayList<>();
     private Set<UUID> likedByUserIds = new HashSet<>();
-    private LocalZeroMediator mediator;
 
     public Update(String content, String imageUrl, User author, Initiative initiative){
         this.id = UUID.randomUUID();
@@ -55,5 +54,9 @@ public class Update {
 
     public void addLikedByUserId(UUID id){
         likedByUserIds.add(id);
+    }
+
+    public Initiative getInitiative() {
+        return initiative;
     }
 }

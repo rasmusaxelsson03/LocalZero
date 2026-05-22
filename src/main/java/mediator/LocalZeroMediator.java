@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class LocalZeroMediator {
 
-    private NotificationServer server;
+    private NotificationService server;
     private UserService userService;
 
     @Autowired
-    public LocalZeroMediator(NotificationServer server, UserService userService) {
+    public LocalZeroMediator(NotificationService server, UserService userService) {
         this.server = server;
         this.userService = userService;
     }

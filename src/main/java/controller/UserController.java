@@ -1,5 +1,7 @@
 package controller;
 
+import controller.requests.LoginRequest;
+import controller.requests.RegisterRequest;
 import mediator.UserService;
 import model.User;
 import org.springframework.web.bind.annotation.*;

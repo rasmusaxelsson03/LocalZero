@@ -1,4 +1,4 @@
-package controller;
+package controller.requests;
 
 public class RegisterRequest {
     public String name;

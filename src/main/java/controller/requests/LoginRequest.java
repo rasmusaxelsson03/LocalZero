@@ -1,4 +1,4 @@
-package controller;
+package controller.requests;
 
 public class LoginRequest {
     public String email;
