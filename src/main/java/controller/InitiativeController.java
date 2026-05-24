@@ -35,8 +35,7 @@ public class InitiativeController {
 
     @GetMapping
     public double getCarbonsSavings(){
-        Double sumSaved = initiativeService.getTotalCarbonSavings();
-        return sumSaved;
+        return initiativeService.getTotalCarbonSavings();
     }
 
     @PostMapping
