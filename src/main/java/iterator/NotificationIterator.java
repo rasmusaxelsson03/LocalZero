@@ -36,7 +36,7 @@ public class NotificationIterator implements Iterator<Notification> {
         return result;
     }
 
-    public void markRead(UUID id) {
+    public void markRead(long id) {
         while (hasNext()) {
             Notification n = next();
             if (n.getId().equals(id)) {

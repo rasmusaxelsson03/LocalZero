@@ -1,5 +1,6 @@
 package mediator;
 
+import model.Role;
 import model.User;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +23,32 @@ public class UserService {
                 .orElse(null);
     }
 
-    public User register(String name, String email, String location, String password){
-        User user = new User(name, email, location, hash(password));
+    public User register(String name, String email, String location, String password, List<String> roles){
+        boolean resident = false;
+        boolean organizer = false;
+        for(String role:roles){
+            if(role.equals("Resident")){
+                 resident = true;
+            }
+            if(role.equals("Organizer")){
+                organizer = true;
+            }
+        }
+
+        List<Role> enumRoles = new ArrayList<>();
+        if(resident && organizer){
+            enumRoles.add(Role.RESIDENT);
+            enumRoles.add(Role.COMMUNITY_ORGANIZER);
+        } else if (resident && !organizer) {
+            enumRoles.add(Role.RESIDENT);
+        } else if (!resident && organizer) {
+            enumRoles.add(Role.COMMUNITY_ORGANIZER);
+        }
+        User user = new User(name, email, location, hash(password), enumRoles);
         users.add(user);
         return user;
+
+
     }
 
     public User login(String email, String password){

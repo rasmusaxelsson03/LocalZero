@@ -25,7 +25,7 @@ public class NotificationService {
         return iterator.getForUser(UUID.fromString(userID));
     }
 
-    public void markRead(UUID id){
+    public void markRead(long id){
         NotificationIterator iterator = new NotificationIterator(notifications);
         iterator.markRead(id);
     }

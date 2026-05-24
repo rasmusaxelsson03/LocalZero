@@ -22,7 +22,7 @@ public class InitiativeService {
         this.mediator = mediator;
     }
 
-    public Initiative findByID(String id){
+    public Initiative findByID(long id){
         return initiatives.stream()
                 .filter(u -> u.getId().equals(id))
                 .findFirst()

@@ -2,6 +2,7 @@ package model;
 
 import jakarta.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -23,12 +24,12 @@ public class User {
 
     protected User() {}
 
-    public User(String name, String email, String location, String passwordHash) {
+    public User(String name, String email, String location, String passwordHash, List<Role> roles) {
         this.name = name;
         this.email = email;
         this.location = location;
         this.passwordHash = passwordHash;
-        this.roles.add(Role.RESIDENT);
+        this.roles.addAll(roles);
     }
 
     public void addRole(Role role) { roles.add(role); }

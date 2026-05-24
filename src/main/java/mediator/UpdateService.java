@@ -24,14 +24,14 @@ public class UpdateService {
         return update;
     }
 
-    public void likeUpdate(UUID updateID, User user){
+    public void likeUpdate(long updateID, User user){
         findByID(updateID).ifPresent(update -> {
             update.like(user);
             mediator.newLike(update, user);
         });
     }
 
-    public void commentOnUpdate(UUID updateID, User user, String comment){
+    public void commentOnUpdate(long updateID, User user, String comment){
         findByID(updateID).ifPresent(update -> {
             update.addComment(comment);
             mediator.newComment(update, user);
@@ -48,9 +48,11 @@ public class UpdateService {
         return result;
     }
 
-    private java.util.Optional<Update> findByID(UUID id) {
+    private java.util.Optional<Update> findByID(long id) {
         for (Update u : updates) {
-            if (u.getId().equals(id)) return java.util.Optional.of(u);
+            if (u.getId().equals(id)){
+                return java.util.Optional.of(u);
+            }
         }
         return java.util.Optional.empty();
     }

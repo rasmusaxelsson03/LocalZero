@@ -11,6 +11,10 @@ public class InitiativeGroup {
         this.title = title;
     }
 
+    public List<Initiative> getChildren() {
+        return children;
+    }
+
     public void add(Initiative initiative){
         children.add(initiative);
     }

@@ -1,11 +1,9 @@
 package controller;
 
+import jakarta.servlet.http.HttpSession;
 import mediator.NotificationService;
-import model.Notification;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/notifications")
@@ -16,16 +14,19 @@ public class NotificationController {
         this.notificationService = notificationService;
     }
 
-    //GET /api/notifications/{userID}
-    @GetMapping("/{userID}")
-    public List<Notification> getForUser(@PathVariable String userID){
-        return notificationService.getNotificationsForUser(userID);
+    //GET /notifications
+    @GetMapping("/notifications")
+    public String getForUser(HttpSession session, Model model){
+        String userId = (String) session.getAttribute("userId");
+        model.addAttribute("notifications", notificationService.getNotificationsForUser(userId));
+        return "inbox";
     }
 
-    //PUT /api/notifications/{ID}/read
-    @PutMapping("/{ID}/read")
-    public void markRead(@PathVariable String ID){
-        notificationService.markRead(UUID.fromString(ID));
+    //PUT /notifications/{ID}/read
+    @PutMapping("/notifications/{id}/read")
+    public String markRead(@PathVariable long ID){
+        notificationService.markRead(ID);
+        return "redirect:/inbox";
     }
 
 

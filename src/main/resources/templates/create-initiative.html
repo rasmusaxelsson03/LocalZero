@@ -1,10 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>LocalZero – New Initiative</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+<div th:replace="~{fragments :: navbar}"></div>
 
+<div class="container">
+    <h1 class="page-title">Create an initiative</h1>
+
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <div class="card">
+        <form th:action="@{/initiatives/new}" method="post">
+
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title"
+                       placeholder="e.g. Tool Sharing in Block C" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="3"
+                          placeholder="What is this initiative about?" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location"
+                       placeholder="e.g. Block C, Malmö" required>
+            </div>
+
+            <div class="form-group">
+                <label for="durationDays">Duration (days)</label>
+                <input type="number" id="durationDays" name="durationDays"
+                       min="1" value="30" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category">
+                    <option value="GARDENING">Gardening</option>
+                    <option value="TOOL_SHARING">Tool Sharing</option>
+                    <option value="FOOD_SWAP">Food Swap</option>
+                    <option value="RECYCLING">Recycling</option>
+                    <option value="RIDESHARING">Ridesharing</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="visibility">Visibility</label>
+                <select id="visibility" name="visibility">
+                    <option value="PUBLIC">Public</option>
+                    <option value="NEIGHBORHOOD">Neighborhood only</option>
+                </select>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:6px;">
+                <button type="submit" class="btn btn-primary">Create initiative</button>
+                <a th:href="@{/feed}" class="btn btn-joined">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+</div>
 </body>
 </html>

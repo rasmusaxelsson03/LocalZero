@@ -1,21 +1,16 @@
 package controller;
 
-import controller.requests.CommentRequest;
-import controller.requests.PostUpdateRequest;
-import controller.requests.UserIdRequest;
+import jakarta.servlet.http.HttpSession;
 import mediator.InitiativeService;
 import mediator.UpdateService;
 import mediator.UserService;
 import model.Initiative;
-import model.Update;
 import model.User;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.UUID;
 
-@RestController
-@RequestMapping("/api/updates")
+@Controller
 public class UpdateController {
     private UpdateService updateService;
     private UserService userService;
@@ -27,31 +22,31 @@ public class UpdateController {
         this.initiativeService = initiativeService;
     }
 
-    //GET /api/updates/{initiativeID}
-    @GetMapping("/{initiativeId")
-    public List<Update> getForInitiative(@PathVariable String initiativeID){
-        return updateService.getUpdates(UUID.fromString(initiativeID));
+    //POST /updates/{initiativeId}/post
+    @PostMapping("/updates/{initiativeId}/post")
+    public String postUpdate(@PathVariable Long initiativeId,
+                             @RequestParam String content,
+                             @RequestParam(required = false) String imageUrl,
+                             HttpSession session){
+        User author = userService.findByID((String) session.getAttribute("userId"));
+        Initiative initiative = initiativeService.findByID(initiativeId);
+        updateService.postUpdate(content, imageUrl, author, initiative);
+        return "redirect:/feed";
     }
 
-    //POST /api/updates
-    @PostMapping
-    public Update postUpdate(@RequestBody PostUpdateRequest req){
-        User author = userService.findByID(req.authorId);
-        Initiative initiative = initiativeService.findByID(UUID.fromString(req.initiativeId));
-        return updateService.postUpdate(req.content, req.imageUrl, author, initiative);
+    //POST /updates/{id}/like
+    @PostMapping("/updates/{id}/like")
+    public String like(@PathVariable Long id, HttpSession session){
+        User user = userService.findByID((String) session.getAttribute("userId"));
+        updateService.likeUpdate(id, user);
+        return "redirect:/feed";
     }
 
-    //POST /api/updates/{id}/like
-    @PostMapping("/{id}/like")
-    public void like(@PathVariable String id, @RequestBody UserIdRequest req){
-        User user = userService.findByID(req.userId);
-        updateService.likeUpdate(UUID.fromString(id), user);
-    }
-
-    //POST /api/updates/{id}/comment
-    @PostMapping("/{id}/comment")
-    public void comment(@PathVariable String id, @RequestBody CommentRequest req){
-        User user = userService.findByID(req.userId);
-        updateService.commentOnUpdate(UUID.fromString(id), user, req.comment);
+    //POST /updates/{id}/comment
+    @PostMapping("/updates/{id}/comment")
+    public String comment(@PathVariable Long id, @RequestParam String comment, HttpSession session){
+        User user = userService.findByID((String) session.getAttribute("userId"));
+        updateService.commentOnUpdate(id, user, comment);
+        return "redirect:/feed";
     }
 }

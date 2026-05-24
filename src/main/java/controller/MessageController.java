@@ -1,15 +1,15 @@
 package controller;
 
-import controller.requests.SendMessageRequest;
+import jakarta.servlet.http.HttpSession;
 import mediator.MessageService;
 import mediator.UserService;
-import model.Message;
 import model.User;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/api/messages")
 public class MessageController {
     private MessageService messageService;
@@ -20,17 +20,22 @@ public class MessageController {
         this.userService = userService;
     }
 
-    //GET /api/messages/{userId}
-    @GetMapping("/{userId}")
-    public List<Message> getInbox(@PathVariable String userID){
-        return messageService.getMessages(userID);
+    //GET /inbox
+    @GetMapping("/inbox")
+    public String getInbox(HttpSession session, Model model){
+        String userId = (String) session.getAttribute("userId");
+
+        model.addAttribute("messages", messageService.getMessages(userId));
+        return "inbox";
     }
 
     //POST /api/messages
-    @PostMapping
-    public Message send(@RequestBody SendMessageRequest req){
-        User fromUser = userService.findByID(req.fromUserId);
-        User toUser = userService.findByID(req.toUserId);
-        return messageService.sendMessage(fromUser, toUser, req.content);
+    @PostMapping("/inbox/send")
+    public String send(@RequestParam String toUserId, @RequestParam String content, HttpSession session){
+        String fromUserId = (String) session.getAttribute("userId");
+        User fromUser = userService.findByID(fromUserId);
+        User toUser = userService.findByID(toUserId);
+        messageService.sendMessage(fromUser, toUser, content);
+        return "redirect:/inbox";
     }
 }
