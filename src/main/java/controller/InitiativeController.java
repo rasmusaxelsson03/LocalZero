@@ -7,7 +7,6 @@ import mediator.UserService;
 import model.Initiative;
 import model.User;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class InitiativeController {
                 Initiative.Category.valueOf(req.category), Initiative.Visibility.valueOf(req.visibility), creator);
     }
 
-    @GetMapping("/carbon-saving")
+    @GetMapping
     public double getCarbonsSavings(){
         Double sumSaved = initiativeService.getTotalCarbonSavings();
         return sumSaved;
