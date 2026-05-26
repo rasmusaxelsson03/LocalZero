@@ -3,6 +3,7 @@ package mediator;
 import iterator.NotificationIterator;
 import model.Notification;
 import org.springframework.stereotype.Component;
+import repository.NotificationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,24 +11,25 @@ import java.util.UUID;
 
 @Component
 public class NotificationService {
-    private List<Notification> notifications = new ArrayList<Notification>();
+    private final NotificationRepository notificationRepository;
 
-    public NotificationService() {
-
+    public NotificationService(NotificationRepository notificationRepository) {
+        this.notificationRepository = notificationRepository;
     }
 
     public void sendNotification(Notification notification) {
-        notifications.add(notification);
+        notificationRepository.save(notification);
     }
 
-    public List<Notification> getNotificationsForUser(String userID){
-        NotificationIterator iterator = new NotificationIterator(notifications);
-        return iterator.getForUser(UUID.fromString(userID));
+    public List<Notification> getNotificationsForUser(Long userId){
+       return notificationRepository.findByToUserId(userId);
     }
 
     public void markRead(long id){
-        NotificationIterator iterator = new NotificationIterator(notifications);
-        iterator.markRead(id);
+        notificationRepository.findById(id).ifPresent(n -> {
+            n.markRead();
+            notificationRepository.save(n);
+        });
     }
 
 }

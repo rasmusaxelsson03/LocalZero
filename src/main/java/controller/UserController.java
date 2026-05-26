@@ -41,7 +41,7 @@ public class UserController {
             session.setAttribute("userId", user.getId());
             session.setAttribute("userName", user.getName());
             session.setAttribute("userRole", user.getRoles());
-            return "redirect/feed";
+            return "redirect:/feed";
         } catch (Exception e){
             model.addAttribute("error", e.getMessage());
             return "login";

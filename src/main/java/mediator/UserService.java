@@ -3,6 +3,7 @@ package mediator;
 import model.Role;
 import model.User;
 import org.springframework.stereotype.Service;
+import repository.UserRepository;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
@@ -10,52 +11,34 @@ import java.util.List;
 
 @Service
 public class UserService {
-    private List<User> users = new ArrayList<User>();
 
-    public UserService() {
+   private final UserRepository userRepository;
 
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public User findByID(String id){
-        return users.stream()
-                .filter(u -> u.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    public User findByID(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User nto found"));
     }
 
     public User register(String name, String email, String location, String password, List<String> roles){
-        boolean resident = false;
-        boolean organizer = false;
-        for(String role:roles){
-            if(role.equals("Resident")){
-                 resident = true;
-            }
-            if(role.equals("Organizer")){
-                organizer = true;
-            }
-        }
-
         List<Role> enumRoles = new ArrayList<>();
-        if(resident && organizer){
-            enumRoles.add(Role.RESIDENT);
-            enumRoles.add(Role.COMMUNITY_ORGANIZER);
-        } else if (resident && !organizer) {
-            enumRoles.add(Role.RESIDENT);
-        } else if (!resident && organizer) {
-            enumRoles.add(Role.COMMUNITY_ORGANIZER);
+        for(String role : roles){
+            if(role.equals("Resident")) enumRoles.add(Role.RESIDENT);
+            if(role.equals("Organizer")) enumRoles.add(Role.COMMUNITY_ORGANIZER);
         }
         User user = new User(name, email, location, hash(password), enumRoles);
-        users.add(user);
-        return user;
-
+        return userRepository.save(user);
 
     }
 
     public User login(String email, String password){
-        return users.stream()
-                .filter(u -> u.getEmail().equals(email) && u.getPasswordHash().equals(hash(password)))
-                .findFirst()
-                .orElse(null);
+        return userRepository.findByEmail(email)
+                .filter(u -> u.getPasswordHash().equals(hash(password)))
+
+                .orElseThrow(() -> new RuntimeException("invalid email or password"));
     }
 
     private String hash(String password){
@@ -72,11 +55,9 @@ public class UserService {
         }
     }
 
-    public void addUser(User user) {
-        users.add(user);
-    }
+
 
     public List<User> getUsers() {
-        return users;
+        return userRepository.findAll();
     }
 }

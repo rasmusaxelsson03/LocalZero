@@ -23,7 +23,7 @@ public class MessageController {
     //GET /inbox
     @GetMapping("/inbox")
     public String getInbox(HttpSession session, Model model){
-        String userId = (String) session.getAttribute("userId");
+        Long userId = (Long) session.getAttribute("userId");
 
         model.addAttribute("messages", messageService.getMessages(userId));
         return "inbox";
@@ -31,8 +31,8 @@ public class MessageController {
 
     //POST /api/messages
     @PostMapping("/inbox/send")
-    public String send(@RequestParam String toUserId, @RequestParam String content, HttpSession session){
-        String fromUserId = (String) session.getAttribute("userId");
+    public String send(@RequestParam Long toUserId, @RequestParam String content, HttpSession session){
+        Long fromUserId = (Long) session.getAttribute("userId");
         User fromUser = userService.findByID(fromUserId);
         User toUser = userService.findByID(toUserId);
         messageService.sendMessage(fromUser, toUser, content);

@@ -24,7 +24,7 @@ public class InitiativeController {
     //GET /feed
     @GetMapping("/feed")
     public String getFeed(HttpSession session, Model model){
-        String userId = (String) session.getAttribute("userId");
+        Long userId = (Long) session.getAttribute("userId");
         model.addAttribute("initiatives", initiativeService.getInitiatives());
         model.addAttribute("userId", userId);
         return "feed";
@@ -46,7 +46,7 @@ public class InitiativeController {
                              HttpSession session,
                              Model model){
         try {
-            User creator = userService.findByID((String) session.getAttribute("userId"));
+            User creator = userService.findByID((Long) session.getAttribute("userId"));
             initiativeService.newInitiative(
                     title, description, location,
                     LocalDate.now(), LocalDate.now().plusDays(durationDays),
@@ -54,7 +54,7 @@ public class InitiativeController {
                     Initiative.Visibility.valueOf(visibility),
                     creator
             );
-            return "redirect:/feed?success=Initiative+created";
+            return "redirect:/feed";
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
             return "create-initiative";
@@ -69,7 +69,7 @@ public class InitiativeController {
     //POST /initiatives/{id}/join
     @PostMapping("/initiatives/{id}/join")
     public String join(@PathVariable Long id, HttpSession session){
-        User member = userService.findByID((String) session.getAttribute("userId"));
+        User member = userService.findByID((Long) session.getAttribute("userId"));
         Initiative initiative = initiativeService.findByID(id);
         initiativeService.addMember(member, initiative);
         return "redirect:/feed";

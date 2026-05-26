@@ -4,6 +4,7 @@ import model.Initiative;
 import model.Update;
 import model.User;
 import org.springframework.stereotype.Service;
+import repository.UpdateRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,21 +13,23 @@ import java.util.UUID;
 @Service
 public class UpdateService {
     private LocalZeroMediator mediator;
-    private List<Update> updates = new ArrayList<>();
+    private final UpdateRepository updateRepository;
 
-    public UpdateService(LocalZeroMediator mediator){
+    public UpdateService(UpdateRepository updateRepository, LocalZeroMediator mediator) {
+        this.updateRepository = updateRepository;
         this.mediator = mediator;
+
     }
 
     public Update postUpdate(String content, String imageUrl, User author, Initiative initiative){
         Update update = new Update(content, imageUrl, author, initiative);
-        updates.add(update);
-        return update;
+        return updateRepository.save(update);
     }
 
     public void likeUpdate(long updateID, User user){
         findByID(updateID).ifPresent(update -> {
             update.like(user);
+            updateRepository.save(update);
             mediator.newLike(update, user);
         });
     }
@@ -34,26 +37,16 @@ public class UpdateService {
     public void commentOnUpdate(long updateID, User user, String comment){
         findByID(updateID).ifPresent(update -> {
             update.addComment(comment);
+            updateRepository.save(update);
             mediator.newComment(update, user);
         });
     }
 
-    public List<Update> getUpdates(UUID initiativeID){
-        List<Update> result = new ArrayList<>();
-        for(int i = 0; i < updates.size(); i++){
-            if(updates.get(i).getInitiative().getId().equals(initiativeID)){
-                result.add(updates.get(i));
-            }
-        }
-        return result;
+    public List<Update> getUpdates(Long initiativeID){
+        return updateRepository.findByInitiativeId(initiativeID);
     }
 
     private java.util.Optional<Update> findByID(long id) {
-        for (Update u : updates) {
-            if (u.getId().equals(id)){
-                return java.util.Optional.of(u);
-            }
-        }
-        return java.util.Optional.empty();
+        return updateRepository.findById(id);
     }
 }

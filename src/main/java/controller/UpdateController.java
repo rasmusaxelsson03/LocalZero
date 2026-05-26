@@ -28,7 +28,7 @@ public class UpdateController {
                              @RequestParam String content,
                              @RequestParam(required = false) String imageUrl,
                              HttpSession session){
-        User author = userService.findByID((String) session.getAttribute("userId"));
+        User author = userService.findByID((Long) session.getAttribute("userId"));
         Initiative initiative = initiativeService.findByID(initiativeId);
         updateService.postUpdate(content, imageUrl, author, initiative);
         return "redirect:/feed";
@@ -37,7 +37,7 @@ public class UpdateController {
     //POST /updates/{id}/like
     @PostMapping("/updates/{id}/like")
     public String like(@PathVariable Long id, HttpSession session){
-        User user = userService.findByID((String) session.getAttribute("userId"));
+        User user = userService.findByID((Long) session.getAttribute("userId"));
         updateService.likeUpdate(id, user);
         return "redirect:/feed";
     }
@@ -45,7 +45,7 @@ public class UpdateController {
     //POST /updates/{id}/comment
     @PostMapping("/updates/{id}/comment")
     public String comment(@PathVariable Long id, @RequestParam String comment, HttpSession session){
-        User user = userService.findByID((String) session.getAttribute("userId"));
+        User user = userService.findByID((Long) session.getAttribute("userId"));
         updateService.commentOnUpdate(id, user, comment);
         return "redirect:/feed";
     }

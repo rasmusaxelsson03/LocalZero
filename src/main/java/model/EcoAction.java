@@ -1,9 +1,6 @@
 package model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,7 +13,10 @@ public class EcoAction {
 
     private String description;
     private double carbonSaved;
+
+    @ManyToOne
     private User user;
+
     private LocalDateTime timestamp;
 
     public EcoAction(String description, double carbonSaved, User user){
@@ -24,6 +24,10 @@ public class EcoAction {
         this.carbonSaved = carbonSaved;
         this.user = user;
         this.timestamp = LocalDateTime.now();
+    }
+
+    public EcoAction(){
+        System.out.println("sup!");
     }
 
     public Long getId() {

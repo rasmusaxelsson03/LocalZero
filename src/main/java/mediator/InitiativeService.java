@@ -6,6 +6,7 @@ import model.Message;
 import model.Update;
 import model.User;
 import org.springframework.stereotype.Service;
+import repository.InitiativeRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,18 +16,17 @@ import java.util.UUID;
 @Service
 public class InitiativeService {
 
-    private List<Initiative> initiatives = new ArrayList<>();
+    private final InitiativeRepository initiativeRepository;
     private LocalZeroMediator mediator;
 
-    public InitiativeService(LocalZeroMediator mediator) {
+    public InitiativeService(LocalZeroMediator mediator, InitiativeRepository initiativeRepository) {
         this.mediator = mediator;
+        this.initiativeRepository = initiativeRepository;
     }
 
     public Initiative findByID(long id){
-        return initiatives.stream()
-                .filter(u -> u.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+        return initiativeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Initiative not found"));
     }
 
     public void addMember(User user, Initiative initiative) {
@@ -48,26 +48,18 @@ public class InitiativeService {
 
     public Initiative newInitiative(String title, String description, String location, LocalDate startDate, LocalDate endDate, Initiative.Category category, Initiative.Visibility visibility, User creator) {
         Initiative initiative = new Initiative(title, description, location, startDate, endDate, category, visibility, creator);
-        initiatives.add(initiative);
+        initiative = initiativeRepository.save(initiative);
         mediator.newInitiative(initiative);
         return initiative;
     }
 
     public List<Initiative> getInitiatives() {
-        return initiatives;
-    }
-
-    public Initiative findByID(UUID id) {
-        for (Initiative i : initiatives) {
-            if (i.getId().equals(id)) {
-                return i;
-            }
-        }
-        return null;
+        return initiativeRepository.findAll();
     }
 
     public double getTotalCarbonSavings() {
-        InitiativeIterator iterator = new InitiativeIterator(initiatives);
+        List<Initiative> all = initiativeRepository.findAll();
+        InitiativeIterator iterator = new InitiativeIterator(all);
         return iterator.totalSavings();
     }
 }
