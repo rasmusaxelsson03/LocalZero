@@ -21,6 +21,21 @@ public class InitiativeController {
         this.userService = userService;
     }
 
+    @GetMapping("/")
+    public String root(){
+        return "redirect:/login";
+    }
+
+    @GetMapping("/login")
+    public String showLogin(){
+        return "login";
+    }
+
+    @GetMapping("/register")
+    public String showRegister(){
+        return "register";
+    }
+
     //GET /feed
     @GetMapping("/feed")
     public String getFeed(HttpSession session, Model model){
