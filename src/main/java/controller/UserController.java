@@ -47,4 +47,14 @@ public class UserController {
             return "login";
         }
     }
+
+    @GetMapping("/login")
+    public String loginPage(){
+        return "login";
+    }
+
+    @GetMapping("/register")
+    public String registerPage(){
+        return "register";
+    }
 }
