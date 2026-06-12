@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @Controller
-@RequestMapping("/api/initiatives")
 public class InitiativeController {
     private InitiativeService initiativeService;
     private UserService userService;
@@ -51,7 +50,7 @@ public class InitiativeController {
         return "create-initiative";
     }
 
-    @PostMapping
+    @PostMapping("/initiatives")
     public String  create(@RequestParam String title,
                              @RequestParam String description,
                              @RequestParam String location,
@@ -76,7 +75,7 @@ public class InitiativeController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/carbon-savings")
     public double getCarbonsSavings(){
         return initiativeService.getTotalCarbonSavings();
     }
