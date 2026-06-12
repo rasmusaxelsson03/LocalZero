@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping("/api/messages")
 public class MessageController {
     private MessageService messageService;
     private UserService userService;
@@ -30,7 +29,7 @@ public class MessageController {
     }
 
     //POST /api/messages
-    @PostMapping("/inbox/send")
+    @PostMapping("/message/send")
     public String send(@RequestParam Long toUserId, @RequestParam String content, HttpSession session){
         Long fromUserId = (Long) session.getAttribute("userId");
         User fromUser = userService.findByID(fromUserId);
