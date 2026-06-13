@@ -23,8 +23,8 @@ public class MessageController {
     @GetMapping("/inbox")
     public String getInbox(HttpSession session, Model model){
         Long userId = (Long) session.getAttribute("userId");
-
         model.addAttribute("messages", messageService.getMessages(userId));
+        model.addAttribute("users", userService.getUsers());
         return "inbox";
     }
 
