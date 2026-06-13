@@ -32,4 +32,6 @@ public class Notification {
     public User getToUser()                 { return toUser; }
     public boolean isRead()                 { return read; }
     public LocalDateTime getTimestamp()     { return timestamp; }
+    public String getText()                 { return message; }
+    public String getTime()                 {return timestamp.toString(); }
 }
