@@ -5,6 +5,7 @@ import mediator.InitiativeService;
 import mediator.UpdateService;
 import mediator.UserService;
 import model.Initiative;
+import model.Update;
 import model.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class UpdateController {
         User author = userService.findByID((Long) session.getAttribute("userId"));
         Initiative initiative = initiativeService.findByID(initiativeId);
         updateService.postUpdate(content, imageUrl, author, initiative);
-        return "redirect:/feed";
+        return "redirect:/initiatives/" + initiativeId;
     }
 
     //POST /updates/{id}/like
@@ -39,7 +40,11 @@ public class UpdateController {
     public String like(@PathVariable Long id, HttpSession session){
         User user = userService.findByID((Long) session.getAttribute("userId"));
         updateService.likeUpdate(id, user);
-        return "redirect:/feed";
+        Long initiativeId = updateService.findByID(id)
+                .map(Update::getInitiative)
+                .map(Initiative::getId)
+                .orElse(null);
+        return initiativeId != null ? "redirect:/initiatives/" + initiativeId : "redirect:/feed";
     }
 
     //POST /updates/{id}/comment
@@ -47,6 +52,10 @@ public class UpdateController {
     public String comment(@PathVariable Long id, @RequestParam String comment, HttpSession session){
         User user = userService.findByID((Long) session.getAttribute("userId"));
         updateService.commentOnUpdate(id, user, comment);
-        return "redirect:/feed";
+        Long initiativeId = updateService.findByID(id)
+                .map(Update::getInitiative)
+                .map(Initiative::getId)
+                .orElse(null);
+        return initiativeId != null ? "redirect:/initiatives/" + initiativeId : "redirect:/feed";
     }
 }

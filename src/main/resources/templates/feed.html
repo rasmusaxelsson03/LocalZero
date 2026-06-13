@@ -34,7 +34,9 @@
                     <span th:case="'RIDESHARING'" class="badge badge-gray">Ridesharing</span>
                 </span>
                 <div style="flex:1;">
-                    <div class="card-title" th:text="${init.title}">Title</div>
+                    <a th:href="@{/initiatives/{id}(id=${init.id})}" style="text-decoration:none; color:inherit;">
+                        <div class="card-title" th:text="${init.title}">Title</div>
+                    </a>
                     <div class="card-meta">
                          <span th:text="${init.location}"></span> &nbsp;·&nbsp;
                         Until <span th:text="${init.endDate}"></span>
@@ -52,13 +54,18 @@
             <div class="card-footer">
                 <span style="font-size:12px; color:#888780;">
                      <span th:text="${init.memberCount}">0</span> members
+                     &nbsp;·&nbsp;
+                     <span th:text="${#lists.size(init.updates)}">0</span> updates
                 </span>
-                <form th:action="@{/initiatives/{id}/join(id=${init.id})}" method="post">
-                    <button type="submit"
-                            th:class="${init.isJoinedBy(userId)} ? 'btn btn-joined btn-sm' : 'btn btn-primary btn-sm'"
-                            th:text="${init.isJoinedBy(userId)} ? '✓ Joined' : 'Join'">
-                    </button>
-                </form>
+                <div style="display:flex; gap:8px;">
+                    <a th:href="@{/initiatives/{id}(id=${init.id})}" class="btn btn-secondary btn-sm">View &amp; comment</a>
+                    <form th:action="@{/initiatives/{id}/join(id=${init.id})}" method="post">
+                        <button type="submit"
+                                th:class="${init.isJoinedBy(userId)} ? 'btn btn-joined btn-sm' : 'btn btn-primary btn-sm'"
+                                th:text="${init.isJoinedBy(userId)} ? '✓ Joined' : 'Join'">
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -31,8 +31,16 @@ public class InitiativeService {
     }
 
     public void addMember(User user, Initiative initiative) {
-        initiative.addMember(user);
-        mediator.userJoinedInitiative(initiative, user);
+        if (!initiative.isJoinedBy(user.getId())) {
+            initiative.addMember(user);
+            initiativeRepository.save(initiative);
+            mediator.userJoinedInitiative(initiative, user);
+        }
+    }
+
+    public void removeMember(User user, Initiative initiative) {
+        initiative.removeMember(user);
+        initiativeRepository.save(initiative);
     }
 
     public void addLike(Update update, User user) {
@@ -54,11 +62,8 @@ public class InitiativeService {
         return initiative;
     }
 
-    public List<Initiative> getInitiatives(User user) {
-        return initiativeRepository.findAll().stream()
-                .filter(i -> i.getVisibility() == Initiative.Visibility.PUBLIC
-                        || i.getLocation().equals(user.getLocation()))
-                .collect(java.util.stream.Collectors.toList());
+    public List<Initiative> getInitiatives() {
+        return initiativeRepository.findAll();
     }
 
     public double getTotalCarbonSavings() {
