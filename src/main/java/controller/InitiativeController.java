@@ -39,7 +39,8 @@ public class InitiativeController {
     @GetMapping("/feed")
     public String getFeed(HttpSession session, Model model){
         Long userId = (Long) session.getAttribute("userId");
-        model.addAttribute("initiatives", initiativeService.getInitiatives());
+        User user = userService.findByID(userId);
+        model.addAttribute("initiatives", initiativeService.getInitiatives(user));
         model.addAttribute("userId", userId);
         return "feed";
     }

@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class InitiativeService {
@@ -53,8 +54,11 @@ public class InitiativeService {
         return initiative;
     }
 
-    public List<Initiative> getInitiatives() {
-        return initiativeRepository.findAll();
+    public List<Initiative> getInitiatives(User user) {
+        return initiativeRepository.findAll().stream()
+                .filter(i -> i.getVisibility() == Initiative.Visibility.PUBLIC
+                        || i.getLocation().equals(user.getLocation()))
+                .collect(java.util.stream.Collectors.toList());
     }
 
     public double getTotalCarbonSavings() {

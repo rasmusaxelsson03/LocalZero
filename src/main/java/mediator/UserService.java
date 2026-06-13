@@ -20,14 +20,14 @@ public class UserService {
 
     public User findByID(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User nto found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     public User register(String name, String email, String location, String password, List<String> roles){
         List<Role> enumRoles = new ArrayList<>();
         for(String role : roles){
-            if(role.equals("Resident")) enumRoles.add(Role.RESIDENT);
-            if(role.equals("Organizer")) enumRoles.add(Role.COMMUNITY_ORGANIZER);
+            if(role.equals("RESIDENT")) enumRoles.add(Role.RESIDENT);
+            if(role.equals("ORGANIZER")) enumRoles.add(Role.COMMUNITY_ORGANIZER);
         }
         User user = new User(name, email, location, hash(password), enumRoles);
         return userRepository.save(user);

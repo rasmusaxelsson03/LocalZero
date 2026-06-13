@@ -34,7 +34,7 @@ public class LocalZeroMediator {
     public void newMessage(Message message) {
         String sender = message.getFromUser().getName();
         User receiver = message.getToUser();
-        String notificationOfMessage = sender + "sent you a message";
+        String notificationOfMessage = sender + " sent you a message";
         Notification notification = new Notification(notificationOfMessage, receiver);
         server.sendNotification(notification);
     }
@@ -42,7 +42,7 @@ public class LocalZeroMediator {
     public void newComment(Update update, User user) {
         User author = update.getAuthor();
         String commentorName = user.getName();
-        String message = commentorName + "commented on your post";
+        String message = commentorName + " commented on your post";
         Notification notification = new Notification(message, author);
         server.sendNotification(notification);
     }
@@ -50,7 +50,7 @@ public class LocalZeroMediator {
     public void newLike(Update update, User user) {
         User author = update.getAuthor();
         String likerName = user.getName();
-        String message = likerName + "liked your post";
+        String message = likerName + " liked your post";
         Notification notification = new Notification(message, author);
         server.sendNotification(notification);
     }
@@ -58,7 +58,7 @@ public class LocalZeroMediator {
     public void userJoinedInitiative(Initiative initiative, User user) {
         User creator = initiative.getCreator();
         String newMember = user.getName();
-        String message= "New member " + newMember + "has joined " + initiative.getTitle();
+        String message= "New member " + newMember + " has joined " + initiative.getTitle();
         Notification notification = new Notification(message, creator);
         server.sendNotification(notification);
     }
