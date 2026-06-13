@@ -48,7 +48,24 @@
             </div>
         </div>
     </div>
-
+    <div style="font-weight:600; margin: 20px 0 10px;">Send message</div>
+    <div class="card">
+        <form th:action="@{/message/send}" method="post">
+            <div class="form-group">
+                <label for="toUserId">To</label>
+                <select id="toUserId" name="toUserId" class="form-control">
+                    <option th:each="user : ${users}"
+                            th:value="${user.id}"
+                            th:text="${user.name}">User</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="content">Message</label>
+                <textarea id="content" name="content" class="form-control" rows="3" placeholder="Write a message..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Send</button>
+        </form>
+    </div>
 </div>
 </body>
 </html>
