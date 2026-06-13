@@ -57,6 +57,19 @@ public class InitiativeService {
         return initiativeRepository.findAll();
     }
 
+    public List<Initiative> getInitiativesForLocation(String location) {
+        List<Initiative> all = initiativeRepository.findAll();
+        InitiativeIterator iterator = new InitiativeIterator(all);
+        List<Initiative> result = new ArrayList<>();
+        while (iterator.hasNext()) {
+            Initiative initiative = iterator.next();
+            if (initiative.getLocation().equalsIgnoreCase(location)) {
+                result.add(initiative);
+            }
+        }
+        return result;
+    }
+
     public double getTotalCarbonSavings() {
         List<Initiative> all = initiativeRepository.findAll();
         InitiativeIterator iterator = new InitiativeIterator(all);

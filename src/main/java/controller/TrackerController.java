@@ -1,5 +1,6 @@
 package controller;
 
+import iterator.EcoActionIterator;
 import jakarta.servlet.http.HttpSession;
 import mediator.UserService;
 import model.EcoAction;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import repository.EcoActionRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Controller
 public class TrackerController {
@@ -30,18 +33,22 @@ public class TrackerController {
         Long userId = (Long) session.getAttribute("userId");
 
         List<EcoAction> allActions = ecoActionRepository.findByUser_Id(userId);
-        double totalCo2 = allActions.stream().mapToDouble(EcoAction::getCarbonSaved).sum();
+        EcoActionIterator allIterator = new EcoActionIterator(allActions);
+        double totalCo2 = allIterator.totalSavings();
         long totalActions = ecoActionRepository.countByUser_Id(userId);
 
         List<EcoAction> recent = ecoActionRepository.findTop10ByUser_IdOrderByTimestampDesc(userId);
+        EcoActionIterator recentIterator = new EcoActionIterator(recent);
 
-        List<java.util.Map<String, String>> recentLogs = recent.stream().map(a -> {
-            java.util.Map<String, String> map = new java.util.HashMap<>();
+        List<Map<String, String>> recentLogs = new ArrayList<>();
+        while (recentIterator.hasNext()) {
+            EcoAction a = recentIterator.next();
+            Map<String, String> map = new HashMap<>();
             map.put("name", a.getDescription());
             map.put("icon", "🌱");
             map.put("timestamp", a.getTimestamp().toLocalDate().toString());
-            return map;
-        }).collect(Collectors.toList());
+            recentLogs.add(map);
+        }
 
         model.addAttribute("ecoActionTypes", EcoActionType.values());
         model.addAttribute("totalCo2", totalCo2);

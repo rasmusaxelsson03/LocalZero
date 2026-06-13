@@ -20,20 +20,27 @@
     </div>
 
     <div th:each="msg : ${messages}">
-        <div th:class="${msg.read} ? 'msg-item' : 'msg-item unread'">
-            <div class="msg-avatar" th:text="${msg.senderInitials}">AB</div>
+        <div class="msg-item">
+            <div class="msg-avatar" th:text="${#strings.substring(msg.fromUser.name, 0, 1)}">A</div>
             <div style="flex:1; min-width:0;">
                 <div>
-                    <span class="msg-sender" th:text="${msg.senderName}">Name</span>
-                    <span class="msg-time" th:text="${msg.time}">time</span>
+                    <span class="msg-sender" th:text="${msg.fromUser.name}">Name</span>
                 </div>
-                <div class="msg-preview" th:text="${msg.preview}">Preview...</div>
+                <div class="msg-preview" th:text="${msg.message}">Preview...</div>
             </div>
         </div>
     </div>
 
     <!-- NOTIFICATIONS -->
-    <div style="font-weight:600; margin: 20px 0 10px;">Notifications</div>
+    <div style="display:flex; align-items:center; gap:10px; margin: 20px 0 10px;">
+        <span style="font-weight:600;">Notifications</span>
+        <span th:if="${unreadCount > 0}"
+              style="background:#16a34a; color:#fff; border-radius:999px; padding:1px 8px; font-size:12px;"
+              th:text="${unreadCount} + ' unread'">0 unread</span>
+        <form th:if="${unreadCount > 0}" th:action="@{/notifications/read-all}" method="post" style="margin-left:auto;">
+            <button type="submit" style="font-size:12px; padding:3px 10px; cursor:pointer;">Mark all read</button>
+        </form>
+    </div>
 
     <div th:if="${#lists.isEmpty(notifications)}" class="empty">
         <p>No notifications yet.</p>
@@ -42,10 +49,13 @@
     <div th:each="notif : ${notifications}">
         <div class="notif-item">
             <div th:class="${notif.read} ? 'notif-dot read' : 'notif-dot'"></div>
-            <div>
-                <div class="notif-text" th:text="${notif.text}">Notification text</div>
-                <div class="notif-time" th:text="${notif.time}">time</div>
+            <div style="flex:1;">
+                <div class="notif-text" th:text="${notif.message}">Notification text</div>
+                <div class="notif-time" th:text="${#temporals.format(notif.timestamp, 'MMM d, HH:mm')}">time</div>
             </div>
+            <form th:if="${!notif.read}" th:action="@{/notifications/{id}/read(id=${notif.id})}" method="post">
+                <button type="submit" style="font-size:11px; padding:2px 8px; cursor:pointer;">Mark read</button>
+            </form>
         </div>
     </div>
 

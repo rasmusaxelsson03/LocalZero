@@ -2,6 +2,7 @@ package controller;
 
 import jakarta.servlet.http.HttpSession;
 import mediator.MessageService;
+import mediator.NotificationService;
 import mediator.UserService;
 import model.User;
 import org.springframework.stereotype.Controller;
@@ -13,10 +14,12 @@ import org.springframework.web.bind.annotation.*;
 public class MessageController {
     private MessageService messageService;
     private UserService userService;
+    private NotificationService notificationService;
 
-    public MessageController(MessageService messageService, UserService userService){
+    public MessageController(MessageService messageService, UserService userService, NotificationService notificationService){
         this.messageService = messageService;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     //GET /inbox
@@ -25,6 +28,8 @@ public class MessageController {
         Long userId = (Long) session.getAttribute("userId");
 
         model.addAttribute("messages", messageService.getMessages(userId));
+        model.addAttribute("notifications", notificationService.getNotificationsForUser(userId));
+        model.addAttribute("unreadCount", notificationService.countUnread(userId));
         return "inbox";
     }
 
