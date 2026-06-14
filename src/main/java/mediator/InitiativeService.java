@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class InitiativeService {
@@ -30,8 +31,16 @@ public class InitiativeService {
     }
 
     public void addMember(User user, Initiative initiative) {
-        initiative.addMember(user);
-        mediator.userJoinedInitiative(initiative, user);
+        if (!initiative.isJoinedBy(user.getId())) {
+            initiative.addMember(user);
+            initiativeRepository.save(initiative);
+            mediator.userJoinedInitiative(initiative, user);
+        }
+    }
+
+    public void removeMember(User user, Initiative initiative) {
+        initiative.removeMember(user);
+        initiativeRepository.save(initiative);
     }
 
     public void addLike(Update update, User user) {
@@ -55,6 +64,19 @@ public class InitiativeService {
 
     public List<Initiative> getInitiatives() {
         return initiativeRepository.findAll();
+    }
+
+    public List<Initiative> getInitiativesForLocation(String location) {
+        List<Initiative> all = initiativeRepository.findAll();
+        InitiativeIterator iterator = new InitiativeIterator(all);
+        List<Initiative> result = new ArrayList<>();
+        while (iterator.hasNext()) {
+            Initiative initiative = iterator.next();
+            if (initiative.getLocation().equalsIgnoreCase(location)) {
+                result.add(initiative);
+            }
+        }
+        return result;
     }
 
     public double getTotalCarbonSavings() {

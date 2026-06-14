@@ -4,10 +4,8 @@ import model.Message;
 import model.User;
 import org.springframework.stereotype.Service;
 import repository.MessageRepository;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import model.MessageDTO;
 
 @Service
 public class MessageService {
@@ -26,7 +24,9 @@ public class MessageService {
        return message;
     }
 
-    public List<Message> getMessages(Long userId){
-        return messageRepository.findByToUserId(userId);
+    public List<MessageDTO> getMessages(Long userId){
+        return messageRepository.findByToUserId(userId).stream()
+                .map(MessageDTO::new)
+                .collect(java.util.stream.Collectors.toList());
     }
 }

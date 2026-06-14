@@ -52,7 +52,16 @@ public class Initiative {
         this.members.add(creator);
     }
 
-    public void addMember(User user)   { members.add(user); }
+    public synchronized void addMember(User user){
+        if(!isJoinedBy(user.getId())) {
+            members.add(user);
+        }
+    }
+
+    public void removeMember(User user) {
+        members.removeIf(m -> m.getId().equals(user.getId()));
+    }
+
     public void addUpdate(Update update) { updates.add(update); }
 
     public double getCarbonSavings()   { return members.size() * 2.5; }

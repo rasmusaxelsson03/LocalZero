@@ -2,6 +2,7 @@ package controller;
 
 import jakarta.servlet.http.HttpSession;
 import mediator.MessageService;
+import mediator.NotificationService;
 import mediator.UserService;
 import model.User;
 import org.springframework.stereotype.Controller;
@@ -10,14 +11,15 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping("/api/messages")
 public class MessageController {
     private MessageService messageService;
     private UserService userService;
+    private NotificationService notificationService;
 
-    public MessageController(MessageService messageService, UserService userService){
+    public MessageController(MessageService messageService, UserService userService, NotificationService notificationService){
         this.messageService = messageService;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     //GET /inbox
@@ -26,11 +28,15 @@ public class MessageController {
         Long userId = (Long) session.getAttribute("userId");
 
         model.addAttribute("messages", messageService.getMessages(userId));
+        model.addAttribute("notifications", notificationService.getNotificationsForUser(userId));
+        model.addAttribute("users", userService.getUsers());
+        model.addAttribute("notifications", notificationService.getNotificationsForUser(userId));
+        model.addAttribute("unreadCount", notificationService.countUnread(userId));
         return "inbox";
     }
 
     //POST /api/messages
-    @PostMapping("/inbox/send")
+    @PostMapping("/message/send")
     public String send(@RequestParam Long toUserId, @RequestParam String content, HttpSession session){
         Long fromUserId = (Long) session.getAttribute("userId");
         User fromUser = userService.findByID(fromUserId);

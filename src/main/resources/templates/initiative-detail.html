@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)file:///C:/Users/03ras/Downloads/initiative-detail.html -->
+<html xmlns:th="http://www.thymeleaf.org"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title th:text="${init.title}">LocalZero – Initiative</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div class="container">
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <a th:href="@{/feed}" style="font-size:13px; color:#888780; text-decoration:none;">← Back to feed</a>
+
+    <div class="card" style="margin-top:10px;">
+        <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:8px;">
+            <span th:switch="${init.category}">
+                <span th:case="&#39;GARDENING&#39;" class="badge badge-green">Gardening</span>
+                <span th:case="&#39;TOOL_SHARING&#39;" class="badge badge-amber">Tool Sharing</span>
+                <span th:case="&#39;FOOD_SWAP&#39;" class="badge badge-teal">Food Swap</span>
+                <span th:case="&#39;RECYCLING&#39;" class="badge badge-teal">Recycling</span>
+                <span th:case="&#39;RIDESHARING&#39;" class="badge badge-gray">Ridesharing</span>
+            </span>
+            <div style="flex:1;">
+                <div class="card-title" th:text="${init.title}">Title</div>
+                <div class="card-meta">
+                     <span th:text="${init.location}"></span> &nbsp;·&nbsp;
+                    Until <span th:text="${init.endDate}"></span>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-bottom:10px;">
+            <span class="badge badge-green" th:text="${init.category}"></span>
+            <span class="badge badge-gray" th:text="${init.visibility}"></span>
+        </div>
+
+        <div class="card-desc" th:text="${init.description}"></div>
+
+        <div class="card-footer">
+            <span style="font-size:12px; color:#888780;">
+                 <span th:text="${init.memberCount}">0</span> members
+            </span>
+            <div style="display:flex; gap:8px;">
+                <form th:action="@{/initiatives/{id}/join(id=${init.id})}" method="post">
+                    <button type="submit" th:class="${init.isJoinedBy(userId)} ? &#39;btn btn-joined btn-sm&#39; : &#39;btn btn-primary btn-sm&#39;" th:text="${init.isJoinedBy(userId)} ? &#39;✓ Joined&#39; : &#39;Join&#39;" th:disabled="${init.isJoinedBy(userId)}">
+                    </button>
+                </form>
+                <form th:if="${init.isJoinedBy(userId)}" th:action="@{/initiatives/{id}/leave(id=${init.id})}" method="post">
+                    <button type="submit" class="btn btn-secondary btn-sm">Leave</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPDATES / POSTS -->
+    <div class="card" style="margin-top:16px;">
+        <h2 style="margin-top:0;">Updates</h2>
+
+        <!-- New update form -->
+        <form th:action="@{/updates/{initiativeId}/post(initiativeId=${init.id})}" method="post" style="display:flex; gap:8px; margin-bottom:16px;">
+            <input type="text" name="content" placeholder="Share an update..." required="" style="flex:1; padding:6px 10px; border:1px solid #ddd; border-radius:6px;">
+            <input type="text" name="imageUrl" placeholder="Image URL (optional)" style="flex:1; padding:6px 10px; border:1px solid #ddd; border-radius:6px;">
+            <button type="submit" class="btn btn-primary btn-sm">Post</button>
+        </form>
+
+        <div th:if="${#lists.isEmpty(init.updates)}" class="empty">
+            <p>No updates yet.</p>
+        </div>
+
+        <div th:each="upd : ${init.updates}" style="margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid #e5e3dc;">
+            <div style="font-size:13px; color:#444;">
+                <span style="font-weight:600;" th:text="${upd.author.name}">Author</span>
+                &nbsp;·&nbsp;
+                <span style="color:#888780;" th:text="${#temporals.format(upd.timestamp, &#39;dd MMM HH:mm&#39;)}"></span>
+            </div>
+            <div style="margin:6px 0;" th:text="${upd.content}">Update content</div>
+            <img th:if="${upd.imageUrl != null and !#strings.isEmpty(upd.imageUrl)}" th:src="${upd.imageUrl}" alt="update image" style="max-width:100%; border-radius:6px; margin-bottom:6px;">
+
+            <!-- Like button -->
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                <form th:action="@{/updates/{id}/like(id=${upd.id})}" method="post">
+                    <button type="submit" th:class="${upd.isLikedBy(userId)} ? &#39;btn btn-joined btn-sm&#39; : &#39;btn btn-secondary btn-sm&#39;" th:text="${upd.isLikedBy(userId)} ? &#39;♥ Liked&#39; : &#39;♡ Like&#39;">
+                    </button>
+                </form>
+                <span style="font-size:12px; color:#888780;">
+                    <span th:text="${upd.likeCount}">0</span> likes
+                </span>
+            </div>
+
+            <!-- Comments -->
+            <div th:each="comment : ${upd.comments}" style="font-size:13px; color:#555; padding:4px 0 4px 12px; border-left:2px solid #e5e3dc; margin-bottom:2px;" th:text="${comment}">
+                Comment text
+            </div>
+
+            <!-- New comment form -->
+            <form th:action="@{/updates/{id}/comment(id=${upd.id})}" method="post" style="display:flex; gap:8px; margin-top:6px;">
+                <input type="text" name="comment" placeholder="Write a comment..." required="" style="flex:1; padding:5px 8px; border:1px solid #ddd; border-radius:6px; font-size:13px;">
+                <button type="submit" class="btn btn-secondary btn-sm">Comment</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+
+</body></html>

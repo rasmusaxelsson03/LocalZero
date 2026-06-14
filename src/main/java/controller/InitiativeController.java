@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @Controller
-@RequestMapping("/api/initiatives")
 public class InitiativeController {
     private InitiativeService initiativeService;
     private UserService userService;
@@ -40,7 +39,6 @@ public class InitiativeController {
     @GetMapping("/feed")
     public String getFeed(HttpSession session, Model model){
         Long userId = (Long) session.getAttribute("userId");
-        model.addAttribute("initiatives", initiativeService.getInitiatives());
         model.addAttribute("userId", userId);
         return "feed";
     }
@@ -51,15 +49,15 @@ public class InitiativeController {
         return "create-initiative";
     }
 
-    @PostMapping
+    @PostMapping("/initiatives")
     public String  create(@RequestParam String title,
-                             @RequestParam String description,
-                             @RequestParam String location,
-                             @RequestParam int durationDays,
-                             @RequestParam String category,
-                             @RequestParam String visibility,
-                             HttpSession session,
-                             Model model){
+                          @RequestParam String description,
+                          @RequestParam String location,
+                          @RequestParam int durationDays,
+                          @RequestParam String category,
+                          @RequestParam String visibility,
+                          HttpSession session,
+                          Model model){
         try {
             User creator = userService.findByID((Long) session.getAttribute("userId"));
             initiativeService.newInitiative(
@@ -76,17 +74,38 @@ public class InitiativeController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/carbon-savings")
     public double getCarbonsSavings(){
         return initiativeService.getTotalCarbonSavings();
+    }
+
+    @GetMapping("/initiatives/{id}")
+    public String getDetail(@PathVariable Long id, HttpSession session, Model model){
+        Long userId = (Long) session.getAttribute("userId");
+        model.addAttribute("init", initiativeService.findByID(id));
+        model.addAttribute("userId", userId);
+        return "initiative-detail";
     }
 
     //POST /initiatives/{id}/join
     @PostMapping("/initiatives/{id}/join")
     public String join(@PathVariable Long id, HttpSession session){
-        User member = userService.findByID((Long) session.getAttribute("userId"));
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        User member = userService.findByID(userId);
         Initiative initiative = initiativeService.findByID(id);
         initiativeService.addMember(member, initiative);
         return "redirect:/feed";
+    }
+
+    //POST /initiatives/{id}/leave
+    @PostMapping("/initiatives/{id}/leave")
+    public String leave(@PathVariable Long id, HttpSession session){
+        User member = userService.findByID((Long) session.getAttribute("userId"));
+        Initiative initiative = initiativeService.findByID(id);
+        initiativeService.removeMember(member, initiative);
+        return "redirect:/initiatives/" + id;
     }
 }

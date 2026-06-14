@@ -5,7 +5,7 @@ import java.util.List;
 
 public class InitiativeGroup {
     private String title;
-    private List<Initiative> children = new ArrayList<>();
+    private List<Initiative> children = new java.util.concurrent.CopyOnWriteArrayList<>();
 
     public InitiativeGroup(String title){
         this.title = title;
