@@ -29,6 +29,8 @@ public class MessageController {
 
         model.addAttribute("messages", messageService.getMessages(userId));
         model.addAttribute("notifications", notificationService.getNotificationsForUser(userId));
+        model.addAttribute("users", userService.getUsers());
+        model.addAttribute("notifications", notificationService.getNotificationsForUser(userId));
         model.addAttribute("unreadCount", notificationService.countUnread(userId));
         return "inbox";
     }

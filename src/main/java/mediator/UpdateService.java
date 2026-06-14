@@ -4,26 +4,32 @@ import model.Initiative;
 import model.Update;
 import model.User;
 import org.springframework.stereotype.Service;
+import repository.InitiativeRepository;
 import repository.UpdateRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
 @Service
 public class UpdateService {
     private LocalZeroMediator mediator;
     private final UpdateRepository updateRepository;
+    private final InitiativeRepository initiativeRepository;
 
-    public UpdateService(UpdateRepository updateRepository, LocalZeroMediator mediator) {
+    public UpdateService(UpdateRepository updateRepository, InitiativeRepository initiativeRepository, LocalZeroMediator mediator) {
         this.updateRepository = updateRepository;
+        this.initiativeRepository = initiativeRepository;
         this.mediator = mediator;
-
     }
 
     public Update postUpdate(String content, String imageUrl, User author, Initiative initiative){
         Update update = new Update(content, imageUrl, author, initiative);
-        return updateRepository.save(update);
+        Update saved = updateRepository.save(update);
+
+        initiative.addUpdate(saved);
+        initiativeRepository.save(initiative);
+
+        return saved;
     }
 
     public void likeUpdate(long updateID, User user){
@@ -36,7 +42,7 @@ public class UpdateService {
 
     public void commentOnUpdate(long updateID, User user, String comment){
         findByID(updateID).ifPresent(update -> {
-            update.addComment(comment);
+            update.addComment(user.getName() + ": " + comment);
             updateRepository.save(update);
             mediator.newComment(update, user);
         });
@@ -46,7 +52,7 @@ public class UpdateService {
         return updateRepository.findByInitiativeId(initiativeID);
     }
 
-    private java.util.Optional<Update> findByID(long id) {
+    public Optional<Update> findByID(long id) {
         return updateRepository.findById(id);
     }
 }

@@ -79,6 +79,14 @@ public class InitiativeController {
         return initiativeService.getTotalCarbonSavings();
     }
 
+    @GetMapping("/initiatives/{id}")
+    public String getDetail(@PathVariable Long id, HttpSession session, Model model){
+        Long userId = (Long) session.getAttribute("userId");
+        model.addAttribute("init", initiativeService.findByID(id));
+        model.addAttribute("userId", userId);
+        return "initiative-detail";
+    }
+
     //POST /initiatives/{id}/join
     @PostMapping("/initiatives/{id}/join")
     public String join(@PathVariable Long id, HttpSession session){
@@ -90,5 +98,14 @@ public class InitiativeController {
         Initiative initiative = initiativeService.findByID(id);
         initiativeService.addMember(member, initiative);
         return "redirect:/feed";
+    }
+
+    //POST /initiatives/{id}/leave
+    @PostMapping("/initiatives/{id}/leave")
+    public String leave(@PathVariable Long id, HttpSession session){
+        User member = userService.findByID((Long) session.getAttribute("userId"));
+        Initiative initiative = initiativeService.findByID(id);
+        initiativeService.removeMember(member, initiative);
+        return "redirect:/initiatives/" + id;
     }
 }

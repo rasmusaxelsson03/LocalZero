@@ -27,15 +27,15 @@ public class UserService {
         if (userRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("Email already in use. Please use a different email address.");
         }
-        
+
         List<Role> enumRoles = new ArrayList<>();
         for(String role : roles){
-            if(role.equals("RESIDENT") || role.equals("Resident")) enumRoles.add(Role.RESIDENT);
-            if(role.equals("ORGANIZER") || role.equals("Organizer")) enumRoles.add(Role.COMMUNITY_ORGANIZER);
+            if(role.equals("RESIDENT")) enumRoles.add(Role.RESIDENT);
+            if(role.equals("ORGANIZER")) enumRoles.add(Role.COMMUNITY_ORGANIZER);
         }
 
         if(enumRoles.isEmpty()) enumRoles.add(Role.RESIDENT);
-        
+
         User user = new User(name, email, location, hash(password), enumRoles);
         return userRepository.save(user);
 
