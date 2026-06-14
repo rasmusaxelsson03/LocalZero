@@ -52,7 +52,7 @@ public class Initiative {
         this.members.add(creator);
     }
 
-    public void addMember(User user){
+    public synchronized void addMember(User user){
         if(!isJoinedBy(user.getId())) {
             members.add(user);
         }
